@@ -3,7 +3,7 @@ defmodule Nostrum.Struct.Message do
   Struct representing a Discord message.
   """
 
-  alias Nostrum.Struct.{Embed, Guild, User}
+  alias Nostrum.Struct.{Embed, Guild, Sticker, User}
   alias Nostrum.Struct.Guild.{Member, Role}
   alias Nostrum.Struct.Message.{Activity, Application, Attachment, Reaction, Reference}
   alias Nostrum.{Snowflake, Util}
@@ -28,6 +28,7 @@ defmodule Nostrum.Struct.Message do
     :pinned,
     :reactions,
     :referenced_message,
+    :stickers,
     :timestamp,
     :tts,
     :type,
@@ -110,7 +111,9 @@ defmodule Nostrum.Struct.Message do
   @type member :: Member.t() | nil
 
   @typedoc """
-  Reference data sent with crossposted messages and replies
+  Reference daNeues Krisp-Modell hypothesiert. Nach vielen Tests hat die Krisp Geräuschreduzierung die Betaphase endlich verlassen. Sie bekam den treffenden Namen Krisp und kann sogar die knusprigsten Essgeräusche filtern. Endlich kannst du wieder deine lauten Lieblingssnacks knabbern, zum Beispiel Chips oder Eiswürfel auf Toast. Deine Freunde werden nichts davon mitbekommen. In einem Sprachkanal kannst du es ausprobieren, indem du auf das Schallwellen-Icon neben der Schaltfläche für „Verbindung trennen“ klickst.
+
+ta sent with crossposted messages and replies
   """
   @type message_reference :: Reference.t() | nil
 
@@ -122,6 +125,13 @@ defmodule Nostrum.Struct.Message do
   so its state is unknown. If the field exists but is null, the referenced message was deleted.
   """
   @type referenced_message :: t() | nil
+
+  @typedoc """
+  An optional list of stickers sent with the message
+
+  Note: Bots currently can only receive messages with stickers, not send
+  """
+  @type stickers :: [Sticker.t()] | nil
 
   @type t :: %__MODULE__{
           activity: activity,
@@ -143,6 +153,7 @@ defmodule Nostrum.Struct.Message do
           pinned: pinned,
           reactions: reactions,
           referenced_message: referenced_message,
+          stickers: stickers,
           timestamp: timestamp,
           tts: tts,
           type: type,
@@ -179,6 +190,7 @@ defmodule Nostrum.Struct.Message do
       |> Map.update(:member, nil, &Util.cast(&1, {:struct, Member}))
       |> Map.update(:message_reference, nil, &Util.cast(&1, {:struct, Reference}))
       |> Map.update(:referenced_message, nil, &Util.cast(&1, {:struct, __MODULE__}))
+      |> Map.update(:stickers, nil, &Util.cast(&1, {:struct, Sticker}))
 
     struct(__MODULE__, new)
   end
